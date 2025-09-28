@@ -1,0 +1,7 @@
+<div>
+  <input type="text" [(ngModel)]="prompt" placeholder="Enter your prompt here" />
+  <button (click)="sendPrompt()">Send Prompt</button>
+</div>
+<div class="response-window">
+  <div *ngFor="let response of responses">{{ response }}</div>
+</div>

@@ -1,0 +1,29 @@
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.responses {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    height: 300px;
+    overflow-y: scroll;
+    background-color: #f8f9fa;
+}
