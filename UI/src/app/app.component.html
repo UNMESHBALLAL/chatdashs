@@ -1,7 +1,38 @@
-<div>
-  <input type="text" [(ngModel)]="prompt" placeholder="Enter your prompt here" />
-  <button (click)="sendPrompt()">Send Prompt</button>
-</div>
-<div class="response-window">
-  <div *ngFor="let response of responses">{{ response }}</div>
+<div class="container">
+  <!-- Server Status Indicator -->
+  <div class="status" [ngClass]="{
+    'status-unknown': serverStatus === 'unknown',
+    'status-available': serverStatus === 'available', 
+    'status-unavailable': serverStatus === 'unavailable'
+  }">
+    Server Status: 
+    <span *ngIf="serverStatus === 'unknown'">Checking...</span>
+    <span *ngIf="serverStatus === 'available'"> Available</span>
+    <span *ngIf="serverStatus === 'unavailable'"> Not Available</span>
+  </div>
+
+  <!-- Input Section -->
+  <div class="input-section">
+    <input 
+      type="text" 
+      [(ngModel)]="prompt" 
+      placeholder="Enter your prompt here" 
+      [disabled]="serverStatus === 'unavailable' || isLoading"
+      (keyup.enter)="sendPrompt()" />
+    <button 
+      (click)="sendPrompt()" 
+      [disabled]="!prompt.trim() || serverStatus === 'unavailable' || isLoading">
+      {{ isLoading ? 'Sending...' : 'Send Prompt' }}
+    </button>
+  </div>
+
+  <!-- Responses Section -->
+  <div class="response-window">
+    <div *ngIf="responses.length === 0" class="no-responses">
+      No responses yet. Enter a prompt and click Send.
+    </div>
+    <div *ngFor="let response of responses" class="response-item">
+      {{ response }}
+    </div>
+  </div>
 </div>
