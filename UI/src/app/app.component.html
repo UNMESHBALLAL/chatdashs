@@ -1,5 +1,6 @@
 <div class="container">
-  <!-- Server Status Indicator -->
+
+  <!-- Server Status -->
   <div class="status" [ngClass]="{
     'status-unknown': serverStatus === 'unknown',
     'status-available': serverStatus === 'available', 
@@ -11,7 +12,7 @@
     <span *ngIf="serverStatus === 'unavailable'"> Not Available</span>
   </div>
 
-  <!-- Input Section -->
+  <!-- Input -->
   <div class="input-section">
     <input 
       type="text" 
@@ -24,15 +25,37 @@
       [disabled]="!prompt.trim() || serverStatus === 'unavailable' || isLoading">
       {{ isLoading ? 'Sending...' : 'Send Prompt' }}
     </button>
+
+    <button 
+      (click)="generateDashboard()" 
+      [disabled]="!prompt.trim() || serverStatus === 'unavailable' || isLoading">
+      {{ isLoading ? 'Generating...' : 'Generate Dashboard' }}
+    </button>
   </div>
 
-  <!-- Responses Section -->
+  <!-- Text Responses -->
   <div class="response-window">
     <div *ngIf="responses.length === 0" class="no-responses">
-      No responses yet. Enter a prompt and click Send.
+      No text responses yet. Enter a prompt and click Send.
     </div>
     <div *ngFor="let response of responses" class="response-item">
       {{ response }}
+    </div>
+  </div>
+
+  <!-- Dashboard Responses -->
+  <div class="dashboard-window" *ngIf="dashboard">
+    <h3>{{ dashboard.dashboardName }}</h3>
+    <p>{{ dashboard.description }}</p>
+    <p><strong>Owner:</strong> {{ dashboard.Owner }}</p>
+
+    <h4>Dashlets:</h4>
+    <div *ngFor="let d of dashboard.dashlets" class="dashlet">
+      <h5>{{ d.widgetTitle }} ({{ d.widgetTypeName }})</h5>
+      <p>Data Source: {{ d.dataSource }}</p>
+      <p>Measurements: {{ d.measurements }}</p>
+      <p>Time Interval: {{ d.time_interval }}</p>
+      <p>Refresh Time: {{ d.refreshTime }} sec</p>
     </div>
   </div>
 </div>

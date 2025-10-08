@@ -9,11 +9,11 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   prompt: string = '';
   responses: string[] = [];
-  serverStatus: string = 'unknown'; // 'unknown', 'available', 'unavailable'
+  serverStatus: string = 'available'; // 'unknown', 'available', 'unavailable'
   isLoading: boolean = false;
 
   constructor(private http: HttpClient) {
-    this.checkServerStatus();
+   // this.checkServerStatus();
   }
 
   // Check if server is available on component initialization
@@ -28,31 +28,30 @@ export class AppComponent {
         }
       });
   }
+dashboard: any = null;
 
-  sendPrompt() {
-    if (!this.prompt.trim()) return;
+sendPrompt() {
+  this.isLoading = true;
+  this.http.post<{generated_text: string}>('http://127.0.0.1:8000/generate', { prompt: this.prompt })
+    .subscribe({
+      next: (res) => {
+        this.responses.push(res.generated_text);
+        this.isLoading = false;
+      },
+      error: () => this.isLoading = false
+    });
+}
 
-    this.isLoading = true;
-    const body = {
-      prompt: this.prompt,
-      max_length: 100
-    };
+generateDashboard() {
+  this.isLoading = true;
+  this.http.post<{dashboard: any}>('http://127.0.0.1:8000/generate_dashboard', { instruction: this.prompt })
+    .subscribe({
+      next: (res) => {
+        this.dashboard = res.dashboard;
+        this.isLoading = false;
+      },
+      error: () => this.isLoading = false
+    });
+}
 
-    this.http.post('http://127.0.0.1:8000/generate', body)
-      .subscribe({
-        next: (response: any) => {
-          this.responses.push(response.generated_text || 'No response text');
-          this.prompt = '';
-          this.serverStatus = 'available';
-        },
-        error: (error) => {
-          console.error('Error:', error);
-          this.responses.push('Error: Server not available. Please check if the API is running.');
-          this.serverStatus = 'unavailable';
-        },
-        complete: () => {
-          this.isLoading = false;
-        }
-      });
-  }
 }
